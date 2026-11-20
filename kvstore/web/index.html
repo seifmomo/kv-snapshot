@@ -1,0 +1,233 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <title>KV Snapshot — a quiet key-value store</title>
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+  <div class="grain" aria-hidden="true"></div>
+
+  <div class="site">
+    <header class="masthead">
+      <a class="identity" href="#top" aria-label="KV Snapshot home">
+        <span class="monogram">kv</span>
+        <span class="identity-text">
+          <strong>KV Snapshot</strong>
+          <em>an exercise in keeping things</em>
+        </span>
+      </a>
+
+      <nav class="nav" aria-label="Page sections">
+        <a href="#store">Store</a>
+        <a href="#archive">Archive</a>
+        <a href="#method">Method</a>
+      </nav>
+
+      <div class="mast-actions">
+        <span class="status"><i class="status-dot"></i><span id="healthText">Checking</span></span>
+        <button id="refreshBtn" class="text-btn" type="button">Refresh</button>
+        <button id="newBtn" class="btn btn-ink" type="button">New entry <span aria-hidden="true">+</span></button>
+      </div>
+    </header>
+
+    <main id="top">
+      <section class="intro">
+        <div class="intro-copy">
+          <p class="kicker">In-memory store · persistent by choice</p>
+          <h1>Hold a little<br><em>order</em> in memory.</h1>
+          <p class="lede">A small key–value store that lives in memory and saves quiet, verified copies to disk. No automatic magic. A snapshot is a decision.</p>
+          <div class="intro-actions">
+            <button id="snapshotBtn" class="btn btn-clay" type="button">Save a snapshot</button>
+            <a href="#method" class="link-arrow">How saving works <span aria-hidden="true">→</span></a>
+          </div>
+        </div>
+
+        <aside class="intro-meta" aria-label="Store summary">
+          <svg class="sprig" viewBox="0 0 160 260" fill="none" aria-hidden="true">
+            <path d="M83 252C78 204 76 156 88 112C95 84 106 56 124 28" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"/>
+            <path d="M88 216C69 211 51 197 43 175C66 177 82 191 88 216Z" stroke="currentColor" stroke-width="1" fill="currentColor" fill-opacity=".06"/>
+            <path d="M87 186C105 180 122 166 130 145C108 147 93 161 87 186Z" stroke="currentColor" stroke-width="1" fill="currentColor" fill-opacity=".06"/>
+            <path d="M90 151C72 146 56 133 49 113C70 115 84 128 90 151Z" stroke="currentColor" stroke-width="1" fill="currentColor" fill-opacity=".06"/>
+            <path d="M94 117C111 111 126 98 133 79C113 81 99 94 94 117Z" stroke="currentColor" stroke-width="1" fill="currentColor" fill-opacity=".06"/>
+            <path d="M99 82C84 78 70 67 63 50C81 52 93 63 99 82Z" stroke="currentColor" stroke-width="1" fill="currentColor" fill-opacity=".06"/>
+            <path d="M107 52C120 47 131 37 136 22C120 24 109 34 107 52Z" stroke="currentColor" stroke-width="1" fill="currentColor" fill-opacity=".06"/>
+            <circle cx="72" cy="232" r="2" fill="currentColor" opacity=".45"/>
+            <circle cx="105" cy="222" r="1.4" fill="currentColor" opacity=".35"/>
+          </svg>
+
+          <dl class="summary">
+            <div>
+              <dt>Keys in memory</dt>
+              <dd id="statEntries">—</dd>
+            </div>
+            <div>
+              <dt>Saved copies</dt>
+              <dd id="statSnapshots">—</dd>
+            </div>
+            <div>
+              <dt>Last saved</dt>
+              <dd id="lastSaved" class="summary-small">Nothing yet</dd>
+            </div>
+          </dl>
+          <p id="subtitle" class="summary-note">Loading the store…</p>
+        </aside>
+      </section>
+
+      <div class="rule" aria-hidden="true"><span></span></div>
+
+      <div class="workspace">
+        <section id="store" class="ledger-panel">
+          <header class="section-head">
+            <div class="section-title">
+              <span class="section-num">01</span>
+              <h2>The store</h2>
+            </div>
+            <label class="search">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="m20 20-4.2-4.2"/></svg>
+              <input id="searchInput" type="search" placeholder="Find a key or value" autocomplete="off" aria-label="Search entries">
+              <kbd>Ctrl K</kbd>
+            </label>
+          </header>
+          <p id="entriesHint" class="section-note">0 keys</p>
+
+          <div class="ledger">
+            <div class="ledger-head" aria-hidden="true">
+              <span>Key</span>
+              <span>Value</span>
+              <span></span>
+            </div>
+            <div id="entriesList" class="ledger-list"></div>
+
+            <div id="emptyEntries" class="empty" hidden>
+              <span class="empty-mark" aria-hidden="true">§</span>
+              <h3 id="emptyEntriesTitle">Nothing here yet</h3>
+              <p id="emptyEntriesText">Write the first key–value pair. It stays in memory until you decide to save a copy.</p>
+            </div>
+          </div>
+        </section>
+
+        <aside class="side">
+          <section id="archive" class="archive-panel">
+            <header class="section-head compact">
+              <div class="section-title">
+                <span class="section-num">02</span>
+                <h2>Saved copies</h2>
+              </div>
+              <span id="snapshotsPill" class="count">0 files</span>
+            </header>
+            <p id="snapshotsHint" class="section-note">Newest first · checked when restored</p>
+            <div id="snapshotList" class="snapshots"></div>
+            <div id="emptySnapshots" class="empty compact" hidden>
+              <span class="empty-mark" aria-hidden="true">○</span>
+              <h3>No copies yet</h3>
+              <p>Press “Save a snapshot” to archive the current state.</p>
+            </div>
+          </section>
+
+          <section id="method" class="method-panel">
+            <span class="section-num">03</span>
+            <h2>How a save happens</h2>
+            <ol class="method-list">
+              <li><span>Write</span><p>a temporary file beside the real one.</p></li>
+              <li><span>Flush</span><p>then <code>fsync</code> it to disk.</p></li>
+              <li><span>Rename</span><p>over the old copy, atomically.</p></li>
+              <li><span>Secure</span><p>the directory entry on POSIX.</p></li>
+            </ol>
+            <p class="method-foot">Snapshots are checked with SHA-256 before they can replace live data.</p>
+          </section>
+
+          <section id="activitySection" class="activity-panel">
+            <header class="section-head compact">
+              <div class="section-title">
+                <h2>Session notes</h2>
+              </div>
+              <button id="clearLogBtn" class="text-btn subtle" type="button">Clear</button>
+            </header>
+            <ul id="activityList" class="activity" aria-live="polite"></ul>
+          </section>
+        </aside>
+      </div>
+
+      <section class="storage-strip" aria-label="Technical details">
+        <div>
+          <span class="label">Storage</span>
+          <code id="dataDir">loading…</code>
+        </div>
+        <div>
+          <span class="label">Uptime</span>
+          <span id="uptime">—</span>
+        </div>
+        <div>
+          <span class="label">Format</span>
+          <span><code>KVSN v1</code> · SHA-256</span>
+        </div>
+        <div>
+          <span class="label">Built with</span>
+          <span>Python · no dependencies</span>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <p>KV Snapshot <span>·</span> Systems Programming, 2026</p>
+      <p>Seif Eldin Mohamed <span>·</span> Cairo</p>
+    </footer>
+  </div>
+
+  <div id="alert" class="alert" role="alert" hidden>
+    <span id="alertText"></span>
+    <button id="alertClose" class="alert-close" type="button" aria-label="Dismiss error">×</button>
+  </div>
+
+  <dialog id="entryDialog" class="modal">
+    <form id="entryForm" method="dialog">
+      <div class="modal-head">
+        <div>
+          <p class="kicker" id="entryKicker">New entry</p>
+          <h2 id="entryDialogTitle">Write something down</h2>
+        </div>
+        <button id="entryClose" class="icon-btn" type="button" aria-label="Close">×</button>
+      </div>
+
+      <label class="field">
+        <span class="field-label">Key <small id="keyCounter">0 / 256 bytes</small></span>
+        <input id="keyInput" type="text" placeholder="e.g. project_owner" autocomplete="off" spellcheck="false">
+      </label>
+
+      <label class="field">
+        <span class="field-label">Value <small id="valueCounter">0 / 64 KiB</small></span>
+        <textarea id="valueInput" rows="7" placeholder="What should be kept?" spellcheck="false"></textarea>
+      </label>
+
+      <p id="entryError" class="form-error" hidden></p>
+      <p class="field-hint">It lives in memory immediately. It becomes durable only when you save a snapshot.</p>
+
+      <div class="modal-actions">
+        <button id="entryCancel" class="text-btn" type="button">Cancel</button>
+        <button id="entrySave" class="btn btn-ink" type="submit">Save entry</button>
+      </div>
+    </form>
+  </dialog>
+
+  <dialog id="confirmDialog" class="modal confirm-modal">
+    <div class="modal-head">
+      <div>
+        <p class="kicker">Please confirm</p>
+        <h2 id="confirmTitle">Are you sure?</h2>
+      </div>
+      <button id="confirmClose" class="icon-btn" type="button" aria-label="Close">×</button>
+    </div>
+    <p id="confirmMessage" class="confirm-message"></p>
+    <div class="modal-actions">
+      <button id="confirmCancel" class="text-btn" type="button">Cancel</button>
+      <button id="confirmOk" class="btn btn-clay" type="button">Confirm</button>
+    </div>
+  </dialog>
+
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+  <script src="/app.js"></script>
+</body>
+</html>

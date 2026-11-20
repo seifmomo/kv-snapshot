@@ -1,0 +1,108 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1120 620" width="1120" height="620" role="img" aria-labelledby="title desc">
+  <title id="title">Atomic snapshot write protocol</title>
+  <desc id="desc">A temporary file is written and fsynced in the same directory, then renamed to its final unique name, then the directory is fsynced on POSIX.</desc>
+
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 z" fill="#756F62"/>
+    </marker>
+    <marker id="arrow-clay" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 z" fill="#AD6047"/>
+    </marker>
+  </defs>
+
+  <rect width="1120" height="620" rx="8" fill="#F7F2E8"/>
+  <text x="56" y="58" font-family="Georgia, 'Times New Roman', serif" font-size="26" fill="#292720">Creating a snapshot safely</text>
+  <text x="56" y="84" font-family="'Segoe UI', Arial, sans-serif" font-size="12" fill="#756F62">a new name is published only after a complete, fsynced file exists</text>
+  <line x1="56" y1="104" x2="1064" y2="104" stroke="#D8CEBD" stroke-width="1"/>
+
+  <!-- State panel A -->
+  <g>
+    <rect x="56" y="136" width="300" height="116" rx="3" fill="#FBF8F1" stroke="#BFB3A0"/>
+    <text x="72" y="160" font-family="'Segoe UI', Arial, sans-serif" font-size="9.5" font-weight="600" letter-spacing="1.2" fill="#978F80">BEFORE</text>
+    <rect x="72" y="172" width="268" height="28" rx="2" fill="#E4E7DA" stroke="#BFC5AE"/>
+    <text x="84" y="190" font-family="Consolas, 'Cascadia Code', monospace" font-size="9.5" fill="#292720">snap-A.kvs</text>
+    <text x="328" y="190" text-anchor="end" font-family="Georgia, 'Times New Roman', serif" font-size="9" font-style="italic" fill="#59624E">valid</text>
+    <rect x="72" y="208" width="268" height="28" rx="2" fill="none" stroke="#D8CEBD" stroke-dasharray="3 3"/>
+    <text x="84" y="226" font-family="'Segoe UI', Arial, sans-serif" font-size="9.5" font-style="italic" fill="#978F80">no temporary file</text>
+  </g>
+
+  <!-- State panel B -->
+  <g>
+    <rect x="410" y="136" width="300" height="116" rx="3" fill="#FBF8F1" stroke="#BFB3A0"/>
+    <text x="426" y="160" font-family="'Segoe UI', Arial, sans-serif" font-size="9.5" font-weight="600" letter-spacing="1.2" fill="#978F80">WHILE WRITING</text>
+    <rect x="426" y="172" width="268" height="28" rx="2" fill="#E4E7DA" stroke="#BFC5AE"/>
+    <text x="438" y="190" font-family="Consolas, 'Cascadia Code', monospace" font-size="9.5" fill="#292720">snap-A.kvs</text>
+    <text x="682" y="190" text-anchor="end" font-family="Georgia, 'Times New Roman', serif" font-size="9" font-style="italic" fill="#59624E">valid</text>
+    <rect x="426" y="208" width="268" height="28" rx="2" fill="#F0DFD5" stroke="#AD6047" stroke-dasharray="3 3"/>
+    <text x="438" y="226" font-family="Consolas, 'Cascadia Code', monospace" font-size="9.5" fill="#914C37">snap-B.kvs.tmp</text>
+    <text x="682" y="226" text-anchor="end" font-family="Georgia, 'Times New Roman', serif" font-size="9" font-style="italic" fill="#AD6047">being written</text>
+  </g>
+
+  <!-- State panel C -->
+  <g>
+    <rect x="764" y="136" width="300" height="116" rx="3" fill="#FBF8F1" stroke="#BFB3A0"/>
+    <text x="780" y="160" font-family="'Segoe UI', Arial, sans-serif" font-size="9.5" font-weight="600" letter-spacing="1.2" fill="#978F80">AFTER RENAME</text>
+    <rect x="780" y="172" width="268" height="28" rx="2" fill="#E4E7DA" stroke="#BFC5AE"/>
+    <text x="792" y="190" font-family="Consolas, 'Cascadia Code', monospace" font-size="9.5" fill="#292720">snap-A.kvs</text>
+    <text x="1036" y="190" text-anchor="end" font-family="Georgia, 'Times New Roman', serif" font-size="9" font-style="italic" fill="#59624E">still valid</text>
+    <rect x="780" y="208" width="268" height="28" rx="2" fill="#E4E7DA" stroke="#59624E"/>
+    <text x="792" y="226" font-family="Consolas, 'Cascadia Code', monospace" font-size="9.5" fill="#292720">snap-B.kvs</text>
+    <text x="1036" y="226" text-anchor="end" font-family="Georgia, 'Times New Roman', serif" font-size="9" font-style="italic" fill="#59624E">complete</text>
+  </g>
+
+  <line x1="356" y1="194" x2="404" y2="194" stroke="#756F62" stroke-width="1.3" marker-end="url(#arrow)"/>
+  <line x1="710" y1="194" x2="758" y2="194" stroke="#756F62" stroke-width="1.3" marker-end="url(#arrow)"/>
+  <text x="380" y="184" text-anchor="middle" font-family="'Segoe UI', Arial, sans-serif" font-size="9" fill="#756F62">write</text>
+  <text x="734" y="184" text-anchor="middle" font-family="'Segoe UI', Arial, sans-serif" font-size="9" fill="#756F62">publish</text>
+
+  <!-- Steps -->
+  <g>
+    <rect x="56" y="330" width="230" height="92" rx="3" fill="#FBF8F1" stroke="#D8CEBD"/>
+    <circle cx="74" cy="354" r="11" fill="#F7F2E8" stroke="#AD6047"/>
+    <text x="74" y="358" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="11" font-style="italic" fill="#AD6047">1</text>
+    <text x="94" y="358" font-family="'Segoe UI', Arial, sans-serif" font-size="12" font-weight="600" fill="#292720">Write temp</text>
+    <text x="72" y="383" font-family="'Segoe UI', Arial, sans-serif" font-size="9.5" fill="#756F62">open(snap-B.kvs.tmp, "wb")</text>
+    <text x="72" y="401" font-family="'Segoe UI', Arial, sans-serif" font-size="9.5" fill="#756F62">in the same directory</text>
+  </g>
+  <g>
+    <rect x="306" y="330" width="250" height="92" rx="3" fill="#FBF8F1" stroke="#D8CEBD"/>
+    <circle cx="324" cy="354" r="11" fill="#F7F2E8" stroke="#AD6047"/>
+    <text x="324" y="358" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="11" font-style="italic" fill="#AD6047">2</text>
+    <text x="344" y="358" font-family="'Segoe UI', Arial, sans-serif" font-size="12" font-weight="600" fill="#292720">Flush + fsync</text>
+    <text x="322" y="383" font-family="'Segoe UI', Arial, sans-serif" font-size="9.5" fill="#756F62">flush the Python buffer, then</text>
+    <text x="322" y="401" font-family="Consolas, 'Cascadia Code', monospace" font-size="9.5" fill="#756F62">os.fsync(file)</text>
+  </g>
+  <g>
+    <rect x="576" y="330" width="250" height="92" rx="3" fill="#FBF8F1" stroke="#D8CEBD"/>
+    <circle cx="594" cy="354" r="11" fill="#F7F2E8" stroke="#AD6047"/>
+    <text x="594" y="358" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="11" font-style="italic" fill="#AD6047">3</text>
+    <text x="614" y="358" font-family="'Segoe UI', Arial, sans-serif" font-size="12" font-weight="600" fill="#292720">Rename</text>
+    <text x="592" y="383" font-family="Consolas, 'Cascadia Code', monospace" font-size="9.5" fill="#756F62">os.replace(temp, final)</text>
+    <text x="592" y="401" font-family="'Segoe UI', Arial, sans-serif" font-size="9.5" fill="#756F62">atomic on one filesystem</text>
+  </g>
+  <g>
+    <rect x="846" y="330" width="218" height="92" rx="3" fill="#FBF8F1" stroke="#D8CEBD"/>
+    <circle cx="864" cy="354" r="11" fill="#F7F2E8" stroke="#AD6047"/>
+    <text x="864" y="358" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="11" font-style="italic" fill="#AD6047">4</text>
+    <text x="884" y="358" font-family="'Segoe UI', Arial, sans-serif" font-size="12" font-weight="600" fill="#292720">Sync directory</text>
+    <text x="862" y="383" font-family="Consolas, 'Cascadia Code', monospace" font-size="9.5" fill="#756F62">fsync(dir) on POSIX</text>
+    <text x="862" y="401" font-family="'Segoe UI', Arial, sans-serif" font-size="9.5" fill="#756F62">skipped on Windows</text>
+  </g>
+
+  <line x1="286" y1="376" x2="300" y2="376" stroke="#756F62" stroke-width="1.3" marker-end="url(#arrow)"/>
+  <line x1="556" y1="376" x2="570" y2="376" stroke="#756F62" stroke-width="1.3" marker-end="url(#arrow)"/>
+  <line x1="826" y1="376" x2="840" y2="376" stroke="#756F62" stroke-width="1.3" marker-end="url(#arrow)"/>
+
+  <!-- Crash brackets -->
+  <path d="M56 446 V458 H556 V446" fill="none" stroke="#AD6047" stroke-width="1.1"/>
+  <text x="306" y="480" text-anchor="middle" font-family="'Segoe UI', Arial, sans-serif" font-size="10" fill="#AD6047">crash here → a .tmp may remain; existing snapshots are untouched</text>
+
+  <path d="M576 446 V458 H1064 V446" fill="none" stroke="#AD6047" stroke-width="1.1"/>
+  <text x="820" y="480" text-anchor="middle" font-family="'Segoe UI', Arial, sans-serif" font-size="10" fill="#AD6047">crash after rename → the new name is complete or absent; never partial</text>
+
+  <!-- Bottom notes -->
+  <text x="56" y="534" font-family="'Segoe UI', Arial, sans-serif" font-size="10.5" fill="#756F62">The temporary file lives beside the final snapshot, because os.replace is atomic only within one filesystem.</text>
+  <text x="56" y="568" font-family="Georgia, 'Times New Roman', serif" font-size="12.5" font-style="italic" fill="#292720">The final name is never opened for writing. It appears only after a complete, fsynced file exists.</text>
+  <text x="56" y="596" font-family="'Segoe UI', Arial, sans-serif" font-size="9.5" fill="#978F80">Windows has no directory fsync, so the last step is skipped there. The file contents and the rename are still safe.</text>
+</svg>

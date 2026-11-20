@@ -1,0 +1,14 @@
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+snapshots/
+ci-snapshots/
+*.kvs
+*.kvs.tmp
+.pytest_cache/
+build/
+dist/
+.DS_Store
+Thumbs.db

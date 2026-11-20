@@ -1,0 +1,101 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1120 640" width="1120" height="640" role="img" aria-labelledby="title desc">
+  <title id="title">KV Snapshot system architecture</title>
+  <desc id="desc">Clients talk to an HTTP API which calls a thread-safe KVStore. A SnapshotManager copies the store and writes snapshot files to disk with an atomic protocol.</desc>
+
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 z" fill="#756F62"/>
+    </marker>
+    <marker id="arrow-clay" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 z" fill="#AD6047"/>
+    </marker>
+  </defs>
+
+  <rect width="1120" height="640" rx="8" fill="#F7F2E8"/>
+  <text x="56" y="58" font-family="Georgia, 'Times New Roman', serif" font-size="26" fill="#292720">KV Snapshot — system architecture</text>
+  <text x="56" y="84" font-family="'Segoe UI', Arial, sans-serif" font-size="12" fill="#756F62">one process, one core, explicit snapshots</text>
+  <line x1="56" y1="104" x2="1064" y2="104" stroke="#D8CEBD" stroke-width="1"/>
+
+  <text x="56" y="138" font-family="'Segoe UI', Arial, sans-serif" font-size="9.5" font-weight="600" letter-spacing="1.4" fill="#978F80">CLIENTS</text>
+
+  <!-- Client cards -->
+  <g>
+    <rect x="56" y="152" width="190" height="62" rx="3" fill="#FBF8F1" stroke="#D8CEBD"/>
+    <text x="74" y="179" font-family="Georgia, 'Times New Roman', serif" font-size="14" fill="#292720">Browser dashboard</text>
+    <text x="74" y="197" font-family="'Segoe UI', Arial, sans-serif" font-size="10" fill="#756F62">HTML · CSS · vanilla JS</text>
+  </g>
+  <g>
+    <rect x="56" y="230" width="190" height="62" rx="3" fill="#FBF8F1" stroke="#D8CEBD"/>
+    <text x="74" y="257" font-family="Georgia, 'Times New Roman', serif" font-size="14" fill="#292720">REST client</text>
+    <text x="74" y="275" font-family="'Segoe UI', Arial, sans-serif" font-size="10" fill="#756F62">curl · scripts · tests</text>
+  </g>
+  <g>
+    <rect x="56" y="308" width="190" height="62" rx="3" fill="#FBF8F1" stroke="#D8CEBD"/>
+    <text x="74" y="335" font-family="Georgia, 'Times New Roman', serif" font-size="14" fill="#292720">Terminal CLI</text>
+    <text x="74" y="353" font-family="'Segoe UI', Arial, sans-serif" font-size="10" fill="#756F62">python -m kvstore.cli</text>
+  </g>
+
+  <!-- Client arrows -->
+  <path d="M246 183 H286 V207 H330" fill="none" stroke="#756F62" stroke-width="1.3" marker-end="url(#arrow)"/>
+  <path d="M246 261 H286 V228 H330" fill="none" stroke="#756F62" stroke-width="1.3" marker-end="url(#arrow)"/>
+  <path d="M246 339 H286 V356 H330" fill="none" stroke="#AD6047" stroke-width="1.3" stroke-dasharray="4 4" marker-end="url(#arrow-clay)"/>
+  <text x="255" y="329" font-family="'Segoe UI', Arial, sans-serif" font-size="9" fill="#AD6047">direct core calls</text>
+
+  <!-- Process boundary -->
+  <rect x="306" y="124" width="470" height="452" rx="6" fill="none" stroke="#BFB3A0" stroke-width="1.1" stroke-dasharray="5 5"/>
+  <text x="326" y="146" font-family="'Segoe UI', Arial, sans-serif" font-size="9" font-weight="600" letter-spacing="1.3" fill="#978F80">ONE PYTHON PROCESS</text>
+
+  <!-- HTTP API -->
+  <g>
+    <rect x="336" y="170" width="408" height="82" rx="3" fill="#FBF8F1" stroke="#BFB3A0"/>
+    <text x="356" y="198" font-family="Georgia, 'Times New Roman', serif" font-size="16" fill="#292720">HTTP API</text>
+    <text x="356" y="217" font-family="Consolas, 'Cascadia Code', monospace" font-size="10.5" fill="#756F62">http.server · ThreadingHTTPServer</text>
+    <text x="356" y="235" font-family="'Segoe UI', Arial, sans-serif" font-size="10" fill="#756F62">routes · JSON · status codes</text>
+  </g>
+
+  <!-- KVStore -->
+  <g>
+    <rect x="336" y="300" width="408" height="112" rx="3" fill="#FBF8F1" stroke="#BFB3A0"/>
+    <text x="356" y="328" font-family="Georgia, 'Times New Roman', serif" font-size="16" fill="#292720">KVStore</text>
+    <text x="356" y="348" font-family="Consolas, 'Cascadia Code', monospace" font-size="10.5" fill="#AD6047">dict[str, str] + threading.Lock</text>
+    <text x="356" y="368" font-family="'Segoe UI', Arial, sans-serif" font-size="10" fill="#756F62">validate_key · set · get · delete · snapshot() · replace_all()</text>
+    <text x="356" y="390" font-family="'Segoe UI', Arial, sans-serif" font-size="9.5" fill="#978F80">the lock is held for dictionary work, never for disk I/O</text>
+  </g>
+
+  <!-- SnapshotManager -->
+  <g>
+    <rect x="336" y="452" width="408" height="104" rx="3" fill="#FBF8F1" stroke="#BFB3A0"/>
+    <text x="356" y="480" font-family="Georgia, 'Times New Roman', serif" font-size="16" fill="#292720">SnapshotManager</text>
+    <text x="356" y="499" font-family="'Segoe UI', Arial, sans-serif" font-size="10" fill="#756F62">create · list · restore · restore_latest</text>
+    <text x="356" y="521" font-family="'Segoe UI', Arial, sans-serif" font-size="9.5" fill="#978F80">its own lock serializes snapshot create and restore</text>
+    <text x="356" y="540" font-family="'Segoe UI', Arial, sans-serif" font-size="9.5" fill="#978F80">names are checked so a path cannot escape the directory</text>
+  </g>
+
+  <!-- API to store -->
+  <line x1="540" y1="252" x2="540" y2="294" stroke="#756F62" stroke-width="1.3" marker-end="url(#arrow)"/>
+  <text x="550" y="277" font-family="'Segoe UI', Arial, sans-serif" font-size="9.5" fill="#756F62">method calls</text>
+
+  <!-- store to manager -->
+  <line x1="540" y1="412" x2="540" y2="446" stroke="#756F62" stroke-width="1.3" marker-start="url(#arrow)" marker-end="url(#arrow)"/>
+  <text x="552" y="434" font-family="'Segoe UI', Arial, sans-serif" font-size="9.5" fill="#756F62">copy / swap</text>
+
+  <!-- manager to disk -->
+  <line x1="744" y1="504" x2="840" y2="504" stroke="#756F62" stroke-width="1.3" marker-end="url(#arrow)"/>
+  <text x="792" y="524" text-anchor="middle" font-family="'Segoe UI', Arial, sans-serif" font-size="9.5" fill="#756F62">atomic publish</text>
+
+  <!-- Disk -->
+  <g>
+    <rect x="846" y="420" width="218" height="170" rx="3" fill="#FBF8F1" stroke="#BFB3A0"/>
+    <text x="864" y="444" font-family="'Segoe UI', Arial, sans-serif" font-size="9.5" font-weight="600" letter-spacing="1.4" fill="#978F80">DISK</text>
+    <text x="864" y="468" font-family="Consolas, 'Cascadia Code', monospace" font-size="11" fill="#292720">snapshots/</text>
+    <rect x="862" y="478" width="186" height="21" rx="2" fill="#EFE8DA" stroke="#D8CEBD"/>
+    <text x="871" y="492" font-family="Consolas, 'Cascadia Code', monospace" font-size="8.5" fill="#756F62">snap-…-111500-306310.kvs</text>
+    <rect x="862" y="504" width="186" height="21" rx="2" fill="#EFE8DA" stroke="#D8CEBD"/>
+    <text x="871" y="518" font-family="Consolas, 'Cascadia Code', monospace" font-size="8.5" fill="#756F62">snap-…-111500-468472.kvs</text>
+    <rect x="862" y="530" width="186" height="21" rx="2" fill="#EFE8DA" stroke="#D8CEBD"/>
+    <text x="871" y="544" font-family="Consolas, 'Cascadia Code', monospace" font-size="8.5" fill="#756F62">snap-…-111500-458621.kvs</text>
+    <text x="864" y="572" font-family="Georgia, 'Times New Roman', serif" font-size="10" font-style="italic" fill="#756F62">one file = one point in time</text>
+  </g>
+
+  <text x="56" y="612" font-family="Georgia, 'Times New Roman', serif" font-size="11" font-style="italic" fill="#756F62">The dashboard and REST API share one core. Validation and durability live in Python, not in JavaScript.</text>
+</svg>

@@ -1,0 +1,60 @@
+{
+  "project": "KV Snapshot",
+  "course": "Systems Programming",
+  "institution": "[University / Faculty]",
+  "semester": "Fall 2026",
+  "leader": "Seif Eldin Mohamed",
+  "submission_date": "18 November 2026",
+  "members": [
+    {
+      "name": "Seif Eldin Mohamed",
+      "role": "Team Lead / Integrator",
+      "contributions": "Architecture, core store, snapshot engine, REST API, dashboard, tests, documentation, integration."
+    },
+    {
+      "name": "[Member 2]",
+      "role": "KV Store Developer",
+      "contributions": "Planned: in-memory map, validation, thread safety."
+    },
+    {
+      "name": "[Member 3]",
+      "role": "Snapshot Writer",
+      "contributions": "Planned: serialization, temp file, fsync, atomic rename."
+    },
+    {
+      "name": "[Member 4]",
+      "role": "Restore & Validation",
+      "contributions": "Planned: parsing, checksum verification, safe swap."
+    },
+    {
+      "name": "[Member 5]",
+      "role": "API Developer",
+      "contributions": "Planned: REST endpoints, JSON schemas, error mapping."
+    },
+    {
+      "name": "[Member 6]",
+      "role": "GUI Developer 1",
+      "contributions": "Planned: layout, entry table, add/edit/delete flow."
+    },
+    {
+      "name": "[Member 7]",
+      "role": "GUI Developer 2",
+      "contributions": "Planned: snapshot/restore controls, status, error display."
+    },
+    {
+      "name": "[Member 8]",
+      "role": "QA Lead",
+      "contributions": "Planned: test plan, edge cases, failure injection."
+    },
+    {
+      "name": "[Member 9]",
+      "role": "QA / Tester",
+      "contributions": "Planned: unit and integration tests, CI setup."
+    },
+    {
+      "name": "[Member 10]",
+      "role": "Documentation Lead",
+      "contributions": "Planned: report, README, diagrams, demo script."
+    }
+  ]
+}
