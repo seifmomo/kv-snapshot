@@ -517,12 +517,12 @@ h1, h2, h3, h4 {{
   break-after: avoid;
 }}
 h1 {{
-  margin: 0 0 12pt;
+  margin: 26pt 0 12pt;
   font-size: 24pt;
   letter-spacing: -0.03em;
   line-height: 1.08;
 }}
-h1.new-page {{ page-break-before: always; break-before: page; }}
+h1.new-page {{ page-break-before: always; break-before: page; margin-top: 0; }}
 h2 {{
   margin: 18pt 0 6pt;
   font-size: 15pt;
@@ -1073,7 +1073,7 @@ def build_pdf(
         text,
         toc=toc_entries,
         toc_offset=toc_offset,
-        break_h1=(kind == "report"),
+        break_h1=False,
     )
     if kind == "report":
         body = body.replace(TEAM_PLACEHOLDER, team_table(team))
